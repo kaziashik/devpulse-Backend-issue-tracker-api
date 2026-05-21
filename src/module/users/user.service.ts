@@ -1,15 +1,17 @@
+import bcrypt from "bcryptjs";
 import { pool } from "../../db";
 import type { IUser } from "./user.interface";
 
-const createUserService = async (payload: IUser) => {
+const RegistrationUserService = async (payload: IUser) => {
   const { name, email, password, role } = payload;
+  const hasPassword= await bcrypt.hash(password,10)
   const result = await pool.query(
     `
     INSERT INTO users (name, email, password, role) VALUES ($1,$2,$3,$4)
      RETURNING 
     id, name, email, role, created_at, updated_at
         `,
-    [name, email, password, role],
+    [name, email, hasPassword, role],
   );
 
   return result.rows[0];
@@ -34,7 +36,7 @@ const loginUserService = async (paylod: {
 
   const user = result.rows[0];
 
-  const matchPassword = password === user.password;
+  const matchPassword = await bcrypt.compare(password,user.password)
 
   if (!matchPassword) {
     throw new Error("Invalid  password");
@@ -50,6 +52,6 @@ const loginUserService = async (paylod: {
 };
 
 export const UserServise = {
-  createUserService,
+  RegistrationUserService,
   loginUserService,
 };

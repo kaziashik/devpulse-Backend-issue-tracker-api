@@ -1,9 +1,9 @@
 import type { Request, Response } from "express";
 import { UserServise } from "./user.service";
 
-const creatuser = async (req: Request, res: Response) => {
+const Registrationuser = async (req: Request, res: Response) => {
   try {
-    const result = await UserServise.createUserService(req.body);
+    const result = await UserServise.RegistrationUserService(req.body);
 
     res.status(201).json({
       success: true,
@@ -38,6 +38,6 @@ const login = async (req: Request, res: Response) => {
 };
 
 export const UserController = {
-  creatuser,
+ Registrationuser,
   login,
 };
