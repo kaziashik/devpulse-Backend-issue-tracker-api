@@ -27,23 +27,58 @@ const createIssueService = async (paylod: Iissues, reporter_id: number) => {
   return result.rows[0];
 };
 
-const getAllIssueServise = async () => {
-  const result = await pool.query(`
-    SELECT *
-    FROM issues
-  `);
+const getAllIssueServise = async (query: {
+  sort?: string;
+  type?: string;
+  status?: string;
+}) => {
+  const { sort = "newest", type, status } = query;
+
+  let sql = `
+  SELECT *
+  FROM issues
+  WHERE 1=1
+  `;
+
+  const values = [];
+
+  if (type) {
+    values.push(type);
+
+    sql += `
+    AND type = $${values.length}
+    `;
+  }
+
+  if (status) {
+    values.push(status);
+
+    sql += `
+    AND status =
+    $${values.length}
+    `;
+  }
+
+  sql += `
+  ORDER BY
+  created_at
+  `;
+
+  sql += sort === "oldest" ? "ASC" : "DESC";
+
+  const result = await pool.query(sql, values);
 
   const issues = await Promise.all(
     result.rows.map(async (issue) => {
-      const reporterResult = await pool.query(
+      const reporter = await pool.query(
         `
-        SELECT
-        id,
-        name,
-        role
-        FROM users
-        WHERE id = $1
-        `,
+          SELECT
+          id,
+          name,
+          role
+          FROM users
+          WHERE id=$1
+          `,
         [issue.reporter_id],
       );
 
@@ -53,7 +88,7 @@ const getAllIssueServise = async () => {
         description: issue.description,
         type: issue.type,
         status: issue.status,
-        reporter: reporterResult.rows[0],
+        reporter: reporter.rows[0],
         created_at: issue.created_at,
         updated_at: issue.updated_at,
       };

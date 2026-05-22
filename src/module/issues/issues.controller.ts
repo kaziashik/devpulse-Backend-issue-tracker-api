@@ -3,9 +3,9 @@ import { issuesServise } from "./issues.servise";
 
 const createIssues = async (req: Request, res: Response) => {
   try {
-    const report_id=req.user?.id
+    const report_id = req.user?.id;
     console.log(" from controlar reporter_id: ", report_id);
-    const result = await issuesServise.createIssueService(req.body,report_id );
+    const result = await issuesServise.createIssueService(req.body, report_id);
 
     if (!result) {
       return res.status(404).json({
@@ -29,21 +29,13 @@ const createIssues = async (req: Request, res: Response) => {
 };
 
 const getAllIssues = async (req: Request, res: Response) => {
-  try {
-    const result = await issuesServise.getAllIssueServise();
+  const result = await issuesServise.getAllIssueServise(req.query);
 
-    return res.status(200).json({
-      success: true,
-      // message: "Issue retrieved successfully",
-      data: result,
-    });
-  } catch (error: any) {
-    return res.status(500).json({
-      success: false,
-      message: "Failed to retrieved issue",
-      error: error.message,
-    });
-  }
+  return res.status(200).json({
+    success: true,
+
+    data: result,
+  });
 };
 
 const GetissuesById = async (req: Request, res: Response) => {
@@ -112,7 +104,7 @@ const deletIssue = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       success: true,
-      message: " Issue Deleted successfully"
+      message: " Issue Deleted successfully",
     });
   } catch (error: any) {
     return res.status(500).json({

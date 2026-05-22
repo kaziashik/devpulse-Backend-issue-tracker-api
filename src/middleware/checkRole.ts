@@ -46,12 +46,12 @@ export const updateIssueAuth = () => {
       userRole === "contributor" &&
       userId === issue.reporter_id &&
       issue.status === "open"
-    ){
-        return next()
+    ) {
+      return next();
     }
-      return res.status(403).json({
-          success: false,
-          message: "Forbidden: You are not authorized",
-        });
+    return res.status(403).json({
+      success: false,
+      message: "Forbidden: You are not authorized",
+    });
   };
 };
