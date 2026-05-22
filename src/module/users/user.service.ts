@@ -1,13 +1,15 @@
 import bcrypt from "bcryptjs";
 import { pool } from "../../db";
 import type { IUser } from "./user.interface";
+import jwt, { type JwtPayload } from "jsonwebtoken";
+import { config } from "../../config";
 
 const RegistrationUserService = async (payload: IUser) => {
   const { name, email, password, role } = payload;
-  const hasPassword= await bcrypt.hash(password,10)
+  const hasPassword = await bcrypt.hash(password, 10);
   const result = await pool.query(
     `
-    INSERT INTO users (name, email, password, role) VALUES ($1,$2,$3,$4)
+    INSERT INTO users (name, email, password, role) VALUES ($1,$2,$3,COALESCE($4, 'contributor'))
      RETURNING 
     id, name, email, role, created_at, updated_at
         `,
@@ -36,18 +38,32 @@ const loginUserService = async (paylod: {
 
   const user = result.rows[0];
 
-  const matchPassword = await bcrypt.compare(password,user.password)
+  const matchPassword = await bcrypt.compare(password, user.password);
 
   if (!matchPassword) {
     throw new Error("Invalid  password");
   }
-  return {
+
+  const jwtpayload = {
     id: user.id,
     name: user.name,
-    email: user.emai,
     role: user.role,
-    created_at: user.created_at,
-    updated_at: user.updated_at,
+  };
+
+  const accessToken = jwt.sign(jwtpayload, config.secret as string, {
+    expiresIn: "1d",
+  });
+
+  return {
+    token: accessToken,
+    user: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      created_at: user.created_at,
+      updated_at: user.updated_at,
+    },
   };
 };
 

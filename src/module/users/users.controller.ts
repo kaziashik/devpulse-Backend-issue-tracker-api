@@ -23,9 +23,9 @@ const login = async (req: Request, res: Response) => {
   try {
     const result = await UserServise.loginUserService(req.body);
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
-      message: "User Login successfully",
+      message: "Login successful",
       data: result,
     });
   } catch (error: any) {
@@ -38,6 +38,6 @@ const login = async (req: Request, res: Response) => {
 };
 
 export const UserController = {
- Registrationuser,
+  Registrationuser,
   login,
 };
