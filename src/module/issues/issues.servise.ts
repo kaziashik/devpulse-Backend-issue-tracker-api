@@ -2,9 +2,6 @@ import { pool } from "../../db";
 import type { Iissues } from "./issues.interface";
 
 const createIssueService = async (paylod: Iissues, reporter_id: number) => {
-  console.log("checking issue creat", paylod);
-  console.log("reporter_id: ",reporter_id);
-
   const { title, description, type } = paylod;
 
   const userVeryfy = await pool.query(
@@ -15,42 +12,94 @@ const createIssueService = async (paylod: Iissues, reporter_id: number) => {
     [reporter_id],
   );
 
-  if (userVeryfy.rows.length=== 0) {
-     return null;
-   
+  if (userVeryfy.rows.length === 0) {
+    return null;
   }
 
-   const result = await pool.query(
-      `
+  const result = await pool.query(
+    `
         INSERT INTO issues (title,description,type,reporter_id) 
         VALUES($1, $2,$3,$4 ) RETURNING *
         
         `,
-      [title, description, type, reporter_id],
-    );
-    return result.rows[0];
-
-  
+    [title, description, type, reporter_id],
+  );
+  return result.rows[0];
 };
 
 const getAllIssueServise = async () => {
   const result = await pool.query(`
-        SELECT * FROM issues
-        
-        `);
-  return result.rows;
+    SELECT *
+    FROM issues
+  `);
+
+  const issues = await Promise.all(
+    result.rows.map(async (issue) => {
+      const reporterResult = await pool.query(
+        `
+        SELECT
+        id,
+        name,
+        role
+        FROM users
+        WHERE id = $1
+        `,
+        [issue.reporter_id],
+      );
+
+      return {
+        id: issue.id,
+        title: issue.title,
+        description: issue.description,
+        type: issue.type,
+        status: issue.status,
+        reporter: reporterResult.rows[0],
+        created_at: issue.created_at,
+        updated_at: issue.updated_at,
+      };
+    }),
+  );
+
+  return issues;
 };
 
 const getIssuesByIdServise = async (id: number) => {
-  const result = await pool.query(
+  const issueResult = await pool.query(
     `
-        SELECT * FROM issues  WHERE id=$1
-        
-        `,
+    SELECT *
+    FROM issues
+    WHERE id = $1
+    `,
     [id],
   );
 
-  return result.rows[0];
+  const issue = issueResult.rows[0];
+
+  if (!issue) {
+    return null;
+  }
+
+  const reporterResult = await pool.query(
+    `
+    SELECT id, name, role
+    FROM users
+    WHERE id = $1
+    `,
+    [issue.reporter_id],
+  );
+
+  const reporter = reporterResult.rows[0];
+
+  return {
+    id: issue.id,
+    title: issue.title,
+    description: issue.description,
+    type: issue.type,
+    status: issue.status,
+    reporter: reporter,
+    created_at: issue.created_at,
+    updated_at: issue.updated_at,
+  };
 };
 
 const updateIssueServise = async (paylod: Iissues, id: number) => {

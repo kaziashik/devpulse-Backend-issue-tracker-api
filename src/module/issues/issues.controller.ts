@@ -34,7 +34,7 @@ const getAllIssues = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       success: true,
-      message: "Issue retrieved successfully",
+      // message: "Issue retrieved successfully",
       data: result,
     });
   } catch (error: any) {
@@ -112,8 +112,7 @@ const deletIssue = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       success: true,
-      message: " Issue Deleted successfully",
-      data: result,
+      message: " Issue Deleted successfully"
     });
   } catch (error: any) {
     return res.status(500).json({
