@@ -3,7 +3,16 @@ import { issuesServise } from "./issues.servise";
 
 const createIssues = async (req: Request, res: Response) => {
   try {
-    const result = await issuesServise.createIssueService(req.body);
+    const report_id=req.user?.id
+    console.log(" from controlar reporter_id: ", report_id);
+    const result = await issuesServise.createIssueService(req.body,report_id );
+
+    if (!result) {
+      return res.status(404).json({
+        success: false,
+        message: "Invalid reporter ID",
+      });
+    }
 
     return res.status(201).json({
       success: true,

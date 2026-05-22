@@ -1,21 +1,36 @@
 import { pool } from "../../db";
 import type { Iissues } from "./issues.interface";
 
-const createIssueService = async (paylod: Iissues) => {
+const createIssueService = async (paylod: Iissues, reporter_id: number) => {
   console.log("checking issue creat", paylod);
+  console.log("reporter_id: ",reporter_id);
 
-  const { title, description, type, reporter_id } = paylod;
+  const { title, description, type } = paylod;
 
-  const result = await pool.query(
+  const userVeryfy = await pool.query(
     `
+
+    SELECT id FROM users WHERE id=$1
+    `,
+    [reporter_id],
+  );
+
+  if (userVeryfy.rows.length=== 0) {
+     return null;
+   
+  }
+
+   const result = await pool.query(
+      `
         INSERT INTO issues (title,description,type,reporter_id) 
         VALUES($1, $2,$3,$4 ) RETURNING *
         
         `,
-    [title, description, type, reporter_id],
-  );
+      [title, description, type, reporter_id],
+    );
+    return result.rows[0];
 
-  return result.rows[0];
+  
 };
 
 const getAllIssueServise = async () => {
