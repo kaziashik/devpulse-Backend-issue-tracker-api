@@ -93,31 +93,212 @@ src/
 
 # ⚙ Installation & Setup
 
-Clone repository:
+Follow these steps to run the project locally.
+
+---
+
+## 1. Clone the Repository
 
 ```bash
-git clone YOUR_REPO_URL
+git clone YOUR_REPOSITORY_URL
 ```
 
-Install dependencies:
+Move into the project folder:
 
 ```bash
-npm install
+cd NODE_EXPRESS_ASSIGNMENT
 ```
 
-Create `.env`
+---
+
+## 2. Initialize Node.js Project (if creating from scratch)
+
+```bash
+npm init -y
+```
+
+---
+
+## 3. Install Main Dependencies
+
+Install backend packages:
+
+```bash
+npm install express pg dotenv cors
+npm install bcryptjs jsonwebtoken
+```
+
+Package purposes:
+
+| Package | Purpose |
+|----------|----------|
+| express | Backend framework |
+| pg | PostgreSQL database driver |
+| dotenv | Environment variables |
+| cors | Cross-origin resource sharing |
+| bcryptjs | Password hashing |
+| jsonwebtoken | JWT authentication |
+
+---
+
+## 4. Install Development Dependencies
+
+Install TypeScript and type definitions:
+
+```bash
+npm install -D typescript
+npm install -D tsx
+npm install -D @types/node
+npm install -D @types/express
+npm install -D @types/pg
+npm install -D @types/jsonwebtoken
+npm install -D @types/bcryptjs
+npm install -D @types/cors
+```
+
+Purpose:
+
+| Package | Purpose |
+|----------|----------|
+| typescript | Type safety |
+| tsx | Run TypeScript without compiling |
+| @types/* | Type definitions |
+
+---
+
+## 5. Create TypeScript Configuration
+
+Generate:
+
+```bash
+npx tsc --init
+```
+
+---
+
+## 6. Configure Environment Variables
+
+Create:
+
+```txt
+.env
+```
+
+Add:
 
 ```env
-CONNECTIONSTRING=
+CONNECTIONSTRING=YOUR_DATABASE_URL
 
 PORT=7000
 
-JWT_SECRET=
+JWT_SECRET=YOUR_SECRET_KEY
 
-CLIENT_URL=
+CLIENT_URL=http://localhost:5173
 ```
 
-Run development server:
+Example:
+
+```env
+CONNECTIONSTRING=postgresql://...
+
+PORT=7000
+
+JWT_SECRET=your_secret_key
+
+CLIENT_URL=http://localhost:5173
+```
+
+---
+
+## 7. Run PostgreSQL Database
+
+Ensure PostgreSQL is running or use Neon PostgreSQL cloud database.
+
+---
+
+## 8. Run Development Server
+
+Start server:
+
+```bash
+npm run dev
+```
+
+or:
+
+```bash
+npx tsx watch ./src/server.ts
+```
+
+Server:
+
+```txt
+http://localhost:7000
+```
+
+---
+
+## 9. Build Production Files
+
+Compile TypeScript:
+
+```bash
+npm run build
+```
+
+---
+
+## 10. Start Production Server
+
+```bash
+npm start
+```
+
+---
+
+## 11. Test API
+
+Use:
+
+- Postman
+- Thunder Client
+- Insomnia
+
+Example:
+
+```txt
+POST http://localhost:7000/api/auth/signup
+
+POST http://localhost:7000/api/auth/login
+
+GET http://localhost:7000/api/issues
+```
+
+---
+
+## 12. Verify Server Running
+
+Open:
+
+```txt
+http://localhost:7000/
+```
+
+Expected response:
+
+```json
+{
+  "success": true,
+  "message": "Server Home Route",
+  "data": {}
+}
+```
+
+---
+
+## Useful Scripts
+
+Run development:
 
 ```bash
 npm run dev
@@ -135,6 +316,14 @@ Start:
 npm start
 ```
 
+---
+
+## Project Requirements
+
+- Node.js (v24+ recommended)
+- PostgreSQL
+- TypeScript
+- Express.js
 ---
 
 # 🔐 Authentication & Authorization
