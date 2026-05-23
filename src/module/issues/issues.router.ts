@@ -14,7 +14,6 @@ route.get("/metrics",auth(),checkRole(USER_ROLE.maintainer),issuesController.get
 route.get('/:id',issuesController.getIssueById)
 route.patch("/:id/status",auth(),checkRole(USER_ROLE.maintainer),issuesController.updateIssueStatus);
 route.patch('/:id',auth(),updateIssueAuth(),issuesController.updateIssues)
-
 route.delete('/:id',auth(),checkRole(USER_ROLE.maintainer),issuesController.deleteIssue)
 
 
