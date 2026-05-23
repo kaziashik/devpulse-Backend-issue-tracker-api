@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 
- const globalErrorHandler = (
+const globalErrorHandler = (
   err: any,
   req: Request,
   res: Response,
@@ -9,8 +9,8 @@ import type { NextFunction, Request, Response } from "express";
   return res.status(err.statusCode || 500).json({
     success: false,
     message: err.message || "Internal Server Error",
-    errors: err,
+    errors: err.message || err,
   });
 };
 
-export default globalErrorHandler
+export default globalErrorHandler;

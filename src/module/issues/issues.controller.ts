@@ -9,6 +9,15 @@ const createIssues = async (
 ) => {
   try {
     const report_id = req.user?.id;
+    if (!report_id) {
+      return sendResponse(res, {
+        statusCode: 401,
+        success: false,
+        message: "Unauthorized access",
+        errors: "User ID missing from token",
+      });
+    }
+
     const result = await issuesServise.createIssueService(req.body, report_id);
 
     if (!result) {
@@ -16,7 +25,7 @@ const createIssues = async (
         statusCode: 404,
         success: false,
         message: "Invalid reporter ID",
-        data: result,
+        errors: "Reporter user not found",
       });
     }
     return sendResponse(res, {
@@ -62,7 +71,7 @@ const getIssueById = async (
         statusCode: 404,
         success: false,
         message: "Issue not found",
-        data: result,
+        errors: "Issue not found",
       });
     }
 
@@ -90,7 +99,7 @@ const updateIssues = async (
         statusCode: 404,
         success: false,
         message: "Issue not found",
-        data: result,
+        errors: "Issue not found",
       });
     }
 
@@ -122,6 +131,7 @@ const updateIssueStatus = async (
         statusCode: 400,
         success: false,
         message: "Invalid status value",
+        errors: "Status must be one of: open, in_progress, resolved",
       });
     }
     const result = await issuesServise.updateIssueStatusService(id, status);
@@ -131,7 +141,7 @@ const updateIssueStatus = async (
         statusCode: 404,
         success: false,
         message: "Issue not found",
-        data: result,
+        errors: "Issue not found",
       });
     }
 
@@ -156,7 +166,7 @@ const deleteIssue = async (req: Request, res: Response, next: NextFunction) => {
         statusCode: 404,
         success: false,
         message: "Issue not found",
-        data: result,
+        errors: "Issue not found",
       });
     }
     return sendResponse(res, {
