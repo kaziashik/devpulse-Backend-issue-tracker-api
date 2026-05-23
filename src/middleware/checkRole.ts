@@ -3,7 +3,7 @@ import type { ROLES } from "../type/type";
 import { pool } from "../db";
 
 export const checkRole = (...roles: ROLES[]) => {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return  (req: Request, res: Response, next: NextFunction) => {
     const userRole = req.user?.role;
 
     if (!userRole || !roles.includes(userRole)) {
@@ -12,14 +12,14 @@ export const checkRole = (...roles: ROLES[]) => {
         message: "Forbidden: You are not authorized",
       });
     }
-
-    next();
+    return next();
   };
 };
 
 export const updateIssueAuth = () => {
   return async (req: Request, res: Response, next: NextFunction) => {
-    const userRole = req.user?.role;
+   try {
+     const userRole = req.user?.role;
     const userId = req.user?.id;
     const issueId = Number(req.params.id);
 
@@ -33,7 +33,7 @@ export const updateIssueAuth = () => {
     if (issueData.rows.length === 0) {
       return res.status(404).json({
         success: false,
-        message: "Issue not fund",
+        message: "Issue not found",
       });
     }
 
@@ -53,5 +53,10 @@ export const updateIssueAuth = () => {
       success: false,
       message: "Forbidden: You are not authorized",
     });
+    
+   } catch (error) {
+    return next(error)
+    
+   }
   };
 };

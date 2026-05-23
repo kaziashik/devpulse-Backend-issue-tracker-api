@@ -10,10 +10,11 @@ const route= Router()
 
 route.post('/',auth(),issuesController.createIssues)
 route.get('/',issuesController.getAllIssues)
-route.get('/:id',issuesController.GetissuesById)
-route.patch('/:id',auth(),updateIssueAuth(),issuesController.updateIssues)
+route.get('/:id',issuesController.getIssueById)
 route.patch("/:id/status",auth(),checkRole(USER_ROLE.maintainer),issuesController.updateIssueStatus);
-route.delete('/:id',auth(),checkRole(USER_ROLE.maintainer),issuesController.deletIssue)
+route.patch('/:id',auth(),updateIssueAuth(),issuesController.updateIssues)
+
+route.delete('/:id',auth(),checkRole(USER_ROLE.maintainer),issuesController.deleteIssue)
 
 
 

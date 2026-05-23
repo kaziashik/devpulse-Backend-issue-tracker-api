@@ -1,10 +1,13 @@
-import type { Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 import { issuesServise } from "./issues.servise";
 
-const createIssues = async (req: Request, res: Response) => {
+const createIssues = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const report_id = req.user?.id;
-    console.log(" from controlar reporter_id: ", report_id);
     const result = await issuesServise.createIssueService(req.body, report_id);
 
     if (!result) {
@@ -19,25 +22,33 @@ const createIssues = async (req: Request, res: Response) => {
       message: "Issue created successfully",
       data: result,
     });
-  } catch (error: any) {
-    return res.status(500).json({
-      success: false,
-      message: "Failed to create issue",
-      error: error.message,
-    });
+  } catch (error) {
+    next(error);
   }
 };
 
-const getAllIssues = async (req: Request, res: Response) => {
-  const result = await issuesServise.getAllIssueServise(req.query);
+const getAllIssues = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const result = await issuesServise.getAllIssueServise(req.query);
 
-  return res.status(200).json({
-    success: true,
-    data: result,
-  });
+    return res.status(200).json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
-const GetissuesById = async (req: Request, res: Response) => {
+const getIssueById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const id = Number(req.params.id);
     const result = await issuesServise.getIssuesByIdServise(id);
@@ -51,19 +62,19 @@ const GetissuesById = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       success: true,
-      message: " Issue retrieved successfully",
+      // message: " Issue retrieved successfully",
       data: result,
     });
-  } catch (error: any) {
-    return res.status(500).json({
-      success: false,
-      message: "Failed to issue retrieved",
-      error: error.message,
-    });
+  } catch (error) {
+    next(error);
   }
 };
 
-const updateIssues = async (req: Request, res: Response) => {
+const updateIssues = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const id = Number(req.params.id);
     const result = await issuesServise.updateIssueServise(req.body, id);
@@ -77,52 +88,51 @@ const updateIssues = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       success: true,
-      message: "Issue update successfully",
+      message: "Issue updated successfully",
       data: result,
     });
-  } catch (error: any) {
-    return res.status(500).json({
-      success: false,
-      message: "Failed to update issue",
-      error: error.message,
-    });
+  } catch (error) {
+    next(error);
   }
 };
 
-
-
-const updateIssueStatus = async (req: Request, res: Response) => {
+const updateIssueStatus = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const id = Number(req.params.id);
 
-  const { status } = req.body;
-  const result = await issuesServise.updateIssueStatusService(id, status);
+    const { status } = req.body;
 
-   if (!result) {
+    const allowedStatus = ["open", "in_progress", "resolved"];
+
+    if (!allowedStatus.includes(status)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid status value",
+      });
+    }
+    const result = await issuesServise.updateIssueStatusService(id, status);
+
+    if (!result) {
       return res.status(404).json({
         success: false,
         message: "Issue not found",
       });
     }
-
-  return res.status(200).json({
-    success: true,
-    message: "Issue status updated successfully",
-    data: result,
-  });
-  } catch (error: any) {
-     return res.status(500).json({
-      success: false,
-      message: "Failed to update issue status ",
-      error: error.message,
+    return res.status(200).json({
+      success: true,
+      message: "Issue status updated successfully",
+      data: result,
     });
-    
+  } catch (error) {
+    next(error);
   }
 };
 
-
-
-const deletIssue = async (req: Request, res: Response) => {
+const deleteIssue= async (req: Request, res: Response, next: NextFunction) => {
   try {
     const id = Number(req.params.id);
     const result = await issuesServise.deleteIssueService(id);
@@ -136,22 +146,18 @@ const deletIssue = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       success: true,
-      message: " Issue Deleted successfully",
+      message: " Issue deleted successfully",
     });
-  } catch (error: any) {
-    return res.status(500).json({
-      success: false,
-      message: "Failed to Delete issue ",
-      error: error.message,
-    });
+  } catch (error) {
+    next(error);
   }
 };
 
 export const issuesController = {
   createIssues,
   getAllIssues,
-  GetissuesById,
+  getIssueById,
   updateIssues,
-  deletIssue,
-  updateIssueStatus
+  deleteIssue,
+  updateIssueStatus,
 };

@@ -6,7 +6,6 @@ const createIssueService = async (paylod: Iissues, reporter_id: number) => {
 
   const userVeryfy = await pool.query(
     `
-
     SELECT id FROM users WHERE id=$1
     `,
     [reporter_id],

@@ -1,7 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import jwt, { type JwtPayload } from "jsonwebtoken";
 import { config } from "../config";
-import { pool } from "../db";
 
 export const auth = () => {
   return async (req: Request, res: Response, next: NextFunction) => {
@@ -11,7 +10,7 @@ export const auth = () => {
       if (!token) {
         return res.status(401).json({
           success: false,
-          message: "Unauthoraize access",
+          message: "Unauthoraized access",
           data: {},
         });
       }
@@ -20,33 +19,12 @@ export const auth = () => {
         token as string,
         config.secret as string,
       ) as JwtPayload;
-      //   console.log(decode);
-
-      const userData = await pool.query(
-        `
-        SELECT id from users WHERE id=$1
-
-        `,
-        [decode.id],
-      );
-
-      if (userData.rows.length === 0) {
-        return res.status(401).json({
-          success: false,
-          message: "Unauthorized: User does not exist",
-          data: {},
-        });
-      }
 
       req.user = decode;
 
-      next();
+      return next();
     } catch (error: any) {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid or expired token",
-        error: error.message,
-      });
+      next(error);
     }
   };
 };
