@@ -33,7 +33,6 @@ const getAllIssues = async (req: Request, res: Response) => {
 
   return res.status(200).json({
     success: true,
-
     data: result,
   });
 };
@@ -90,6 +89,39 @@ const updateIssues = async (req: Request, res: Response) => {
   }
 };
 
+
+
+const updateIssueStatus = async (req: Request, res: Response) => {
+  try {
+    const id = Number(req.params.id);
+
+  const { status } = req.body;
+  const result = await issuesServise.updateIssueStatusService(id, status);
+
+   if (!result) {
+      return res.status(404).json({
+        success: false,
+        message: "Issue not found",
+      });
+    }
+
+  return res.status(200).json({
+    success: true,
+    message: "Issue status updated successfully",
+    data: result,
+  });
+  } catch (error: any) {
+     return res.status(500).json({
+      success: false,
+      message: "Failed to update issue status ",
+      error: error.message,
+    });
+    
+  }
+};
+
+
+
 const deletIssue = async (req: Request, res: Response) => {
   try {
     const id = Number(req.params.id);
@@ -121,4 +153,5 @@ export const issuesController = {
   GetissuesById,
   updateIssues,
   deletIssue,
+  updateIssueStatus
 };

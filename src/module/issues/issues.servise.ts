@@ -156,6 +156,29 @@ const updateIssueServise = async (paylod: Iissues, id: number) => {
   return result.rows[0];
 };
 
+const updateIssueStatusService = async (
+  id: number,
+
+  status: string,
+) => {
+  const result = await pool.query(
+    `
+UPDATE issues
+SET
+status=$1,
+updated_at=
+NOW()
+WHERE id=$2
+RETURNING *
+`,
+    [status, id],
+  );
+  if(result.rows.length===0){
+    return null
+  }
+  return result.rows[0];
+};
+
 const deleteIssueService = async (id: number) => {
   const result = await pool.query(
     `
@@ -173,4 +196,5 @@ export const issuesServise = {
   getIssuesByIdServise,
   updateIssueServise,
   deleteIssueService,
+  updateIssueStatusService,
 };
