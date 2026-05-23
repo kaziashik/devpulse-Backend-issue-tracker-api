@@ -1,6 +1,5 @@
 import express, {
   type Application,
-  type NextFunction,
   type Request,
   type Response,
 } from "express";
@@ -19,8 +18,6 @@ app.use(
     credentials: true,
   }),
 );
-
-app.use(express.json());
 
 app.use(express.json());
 app.use("/api/issues", issuesRouter);

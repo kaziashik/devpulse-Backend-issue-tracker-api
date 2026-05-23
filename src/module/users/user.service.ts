@@ -4,7 +4,7 @@ import type { IUser } from "./user.interface";
 import jwt, { type JwtPayload } from "jsonwebtoken";
 import { config } from "../../config";
 
-const RegistrationUserService = async (payload: IUser) => {
+const registerUserService = async (payload: IUser) => {
   const { name, email, password, role } = payload;
   const hasPassword = await bcrypt.hash(password, 10);
   const result = await pool.query(
@@ -67,7 +67,7 @@ const loginUserService = async (paylod: {
   };
 };
 
-export const UserServise = {
-  RegistrationUserService,
+export const UserService  = {
+  registerUserService,
   loginUserService,
 };

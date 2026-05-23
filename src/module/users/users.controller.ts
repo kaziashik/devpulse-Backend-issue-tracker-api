@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
-import { UserServise } from "./user.service";
+import { UserService } from "./user.service";
+import sendResponse from "../../utility/sendResponse";
 
 const registerUser = async (
   req: Request,
@@ -7,9 +8,10 @@ const registerUser = async (
   next: NextFunction,
 ) => {
   try {
-    const result = await UserServise.RegistrationUserService(req.body);
+    const result = await UserService.registerUserService(req.body);
 
-    return res.status(201).json({
+    return sendResponse(res, {
+      statusCode: 201,
       success: true,
       message: "User registered successfully",
       data: result,
@@ -21,9 +23,9 @@ const registerUser = async (
 
 const login = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const result = await UserServise.loginUserService(req.body);
-
-    return res.status(200).json({
+    const result = await UserService.loginUserService(req.body);
+    return sendResponse(res, {
+      statusCode: 200,
       success: true,
       message: "Login successful",
       data: result,
