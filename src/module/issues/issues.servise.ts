@@ -172,8 +172,8 @@ RETURNING *
 `,
     [status, id],
   );
-  if(result.rows.length===0){
-    return null
+  if (result.rows.length === 0) {
+    return null;
   }
   return result.rows[0];
 };
@@ -189,6 +189,32 @@ const deleteIssueService = async (id: number) => {
   return result.rows[0];
 };
 
+const getMetricsService = async () => {
+  const totalIssues = await pool.query(`SELECT COUNT(*) FROM issues`);
+
+  const openIssues = await pool.query(
+    `SELECT COUNT(*) FROM issues WHERE status='open'`,
+  );
+
+  const inProgressIssues = await pool.query(
+    `SELECT COUNT(*) FROM issues WHERE status='in_progress'`,
+  );
+
+  const resolvedIssues = await pool.query(
+    `SELECT COUNT(*) FROM issues WHERE status='resolved'`,
+  );
+
+  const totalUsers = await pool.query(`SELECT COUNT(*) FROM users`);
+
+  return {
+    total_users: Number(totalUsers.rows[0].count),
+    total_issues: Number(totalIssues.rows[0].count),
+    open_issues: Number(openIssues.rows[0].count),
+    in_progress_issues: Number(inProgressIssues.rows[0].count),
+    resolved_issues: Number(resolvedIssues.rows[0].count),
+  };
+};
+
 export const issuesServise = {
   createIssueService,
   getAllIssueServise,
@@ -196,4 +222,5 @@ export const issuesServise = {
   updateIssueServise,
   deleteIssueService,
   updateIssueStatusService,
+  getMetricsService,
 };

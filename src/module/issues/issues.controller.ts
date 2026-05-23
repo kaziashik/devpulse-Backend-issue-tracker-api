@@ -153,6 +153,23 @@ const deleteIssue= async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const getMetrics=async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const result = await issuesServise.getMetricsService(req.query);
+
+    return res.status(200).json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const issuesController = {
   createIssues,
   getAllIssues,
@@ -160,4 +177,5 @@ export const issuesController = {
   updateIssues,
   deleteIssue,
   updateIssueStatus,
+  getMetrics
 };

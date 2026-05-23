@@ -10,6 +10,7 @@ const route= Router()
 
 route.post('/',auth(),issuesController.createIssues)
 route.get('/',issuesController.getAllIssues)
+route.get("/metrics",auth(),checkRole(USER_ROLE.maintainer),issuesController.getMetrics)
 route.get('/:id',issuesController.getIssueById)
 route.patch("/:id/status",auth(),checkRole(USER_ROLE.maintainer),issuesController.updateIssueStatus);
 route.patch('/:id',auth(),updateIssueAuth(),issuesController.updateIssues)
