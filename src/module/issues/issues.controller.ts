@@ -159,7 +159,7 @@ const getMetrics=async (
   next: NextFunction,
 ) => {
   try {
-    const result = await issuesServise.getMetricsService(req.query);
+    const result = await issuesServise.getMetricsService();
 
     return res.status(200).json({
       success: true,
