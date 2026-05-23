@@ -364,7 +364,7 @@ Kazi Ashikur Rahman
 GitHub:
 
 ```txt
-Add GitHub profile
+https://github.com/kaziashik
 ```
 
 ---
