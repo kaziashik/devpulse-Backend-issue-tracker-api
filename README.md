@@ -9,16 +9,12 @@ A collaborative issue tracking backend API for software teams to report bugs, re
 Live Deployment:
 
 ```txt
-Add your deployed URL here
-Example:
 https://devpulse-api.onrender.com
 ```
 
 GitHub Repository:
 
 ```txt
-Add GitHub URL here
-Example:
 https://github.com/yourusername/devpulse
 ```
 
