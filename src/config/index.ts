@@ -9,4 +9,5 @@ export const config = {
   connection_string: process.env.ONNECTIONSTRING,
   port: process.env.PORT,
   secret: process.env.JWT_SECRET,
+  client_url: process.env.CLIENT_URL,
 };

@@ -147,17 +147,14 @@ const updateIssueServise = async (paylod: Iissues, id: number) => {
         type=COALESCE($3,type),
         updated_at = NOW() WHERE id=$4
         RETURNING *
-        
         `,
     [title, description, type, id],
   );
-
   return result.rows[0];
 };
 
 const updateIssueStatusService = async (
   id: number,
-
   status: string,
 ) => {
   const result = await pool.query(
