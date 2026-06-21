@@ -9,13 +9,7 @@ A collaborative issue tracking backend API for software teams to report bugs, re
 Live Deployment:
 
 ```txt
-https://devpulse-api.onrender.com
-```
-
-GitHub Repository:
-
-```txt
-https://github.com/yourusername/devpulse
+[https://devpulse-api.onrender.com](https://node-express-assignment-seven.vercel.app/)
 ```
 
 ---
